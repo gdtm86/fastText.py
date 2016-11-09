@@ -1,5 +1,4 @@
 # fastText C++ interface
-cimport utils
 from interface cimport trainWrapper
 from interface cimport loadModelWrapper
 from interface cimport FastTextModel
@@ -142,9 +141,6 @@ cdef class FastTextModelWrapper:
 # label_prefix is an optional argument to load the supervised model
 # prefix will be removed from the label name and stored in the model.labels
 def load_model(filename, label_prefix='', encoding='utf-8'):
-    # Initialize log & sigmoid tables
-    utils.initTables()
-
     # Check if the filename is readable
     if not os.path.isfile(filename):
         raise ValueError('fastText: trained model cannot be opened!')
@@ -192,10 +188,6 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
         os.remove(output)
     except IOError:
         raise IOError('fastText: output is not writeable!')
-
-    # Initialize log & sigmoid tables
-    # The table is not freed since it used by utils::log globally
-    utils.initTables()
 
     # Setup argv, arguments and their values
     py_argv = [b'fasttext', bytes(model_name, 'utf-8')]
